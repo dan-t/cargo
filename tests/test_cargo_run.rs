@@ -228,7 +228,6 @@ test!(example_with_release_flag {
             version = "0.0.1"
             authors = []
         "#)
-        //.file("src/lib.rs", "")
         .file("examples/a.rs", r#"
             fn main() {
                 if cfg!(ndebug) {
