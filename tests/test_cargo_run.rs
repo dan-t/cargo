@@ -220,6 +220,63 @@ hello main.rs
         sep = path::SEP).as_slice()));
 });
 
+test!(example_with_release_flag {
+    let p = project("foo")
+        .file("Cargo.toml", r#"
+            [project]
+            name = "foo"
+            version = "0.0.1"
+            authors = []
+        "#)
+        //.file("src/lib.rs", "")
+        .file("examples/a.rs", r#"
+            fn main() {
+                if cfg!(ndebug) {
+                    println!("fast")
+                } else {
+                    println!("slow")
+                }
+            }
+        "#);
+
+    assert_that(p.cargo_process("run").arg("-v").arg("--release").arg("--example").arg("a"),
+                execs().with_status(0).with_stdout(format!("\
+{compiling} foo v0.0.1 ({url})
+{running} `rustc {dir}{sep}examples{sep}a.rs --crate-name a --crate-type bin \
+        -C opt-level=3 \
+        --cfg ndebug \
+        --out-dir {dir}{sep}target{sep}examples \
+        --emit=dep-info,link \
+        -L {dir}{sep}target \
+        -L {dir}{sep}target{sep}deps`
+{running} `target{sep}examples{sep}a`
+fast
+",
+        compiling = COMPILING,
+        running = RUNNING,
+        dir = p.root().display(),
+        url = path2url(p.root()),
+        sep = path::SEP).as_slice()));
+
+    assert_that(p.cargo_process("run").arg("-v").arg("--example").arg("a"),
+                execs().with_status(0).with_stdout(format!("\
+{compiling} foo v0.0.1 ({url})
+{running} `rustc {dir}{sep}examples{sep}a.rs --crate-name a --crate-type bin \
+        -g \
+        --out-dir {dir}{sep}target{sep}examples \
+        --emit=dep-info,link \
+        -L {dir}{sep}target \
+        -L {dir}{sep}target{sep}deps`
+{running} `target{sep}examples{sep}a`
+slow
+",
+        compiling = COMPILING,
+        running = RUNNING,
+        dir = p.root().display(),
+        url = path2url(p.root()),
+        sep = path::SEP).as_slice()));
+});
+
 test!(run_dylib_dep {
     let p = project("foo")
         .file("Cargo.toml", r#"
