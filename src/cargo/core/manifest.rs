@@ -185,15 +185,6 @@ impl Profile {
         }
     }
 
-    pub fn default_example_release() -> Profile {
-        Profile {
-            env: "test_release".to_string(),
-            opt_level: 3,
-            debug: false,
-            .. Profile::default_example()
-        }
-    }
-
     pub fn default_bench() -> Profile {
         Profile {
             env: "bench".to_string(),
@@ -201,6 +192,13 @@ impl Profile {
             test: true,
             dest: Some("release".to_string()),
             .. Profile::default()
+        }
+    }
+
+    pub fn default_example_release() -> Profile {
+        Profile {
+            test: false,
+            .. Profile::default_bench()
         }
     }
 
