@@ -233,12 +233,15 @@ test!(example_with_release_flag {
             path = "bar"
         "#)
         .file("examples/a.rs", r#"
+            extern crate bar;
+
             fn main() {
                 if cfg!(ndebug) {
-                    println!("fast")
+                    println!("fast1")
                 } else {
-                    println!("slow")
+                    println!("slow1")
                 }
+                bar::baz();
             }
         "#)
         .file("bar/Cargo.toml", r#"
@@ -251,7 +254,13 @@ test!(example_with_release_flag {
             name = "bar"
         "#)
         .file("bar/src/bar.rs", r#"
-            pub fn noop() {}
+            pub fn baz() {
+                if cfg!(ndebug) {
+                    println!("fast2")
+                } else {
+                    println!("slow2")
+                }
+            }
         "#);
 
     assert_that(p.cargo_process("run").arg("-v").arg("--release").arg("--example").arg("a"),
@@ -276,7 +285,8 @@ test!(example_with_release_flag {
         -L {dir}{sep}target{sep}release{sep}deps \
          --extern bar={dir}{sep}target{sep}release{sep}deps{sep}libbar-[..].rlib`
 {running} `target{sep}release{sep}examples{sep}a`
-fast
+fast1
+fast2
 ",
         compiling = COMPILING,
         running = RUNNING,
@@ -304,7 +314,8 @@ fast
         -L {dir}{sep}target{sep}deps \
          --extern bar={dir}{sep}target{sep}deps{sep}libbar-[..].rlib`
 {running} `target{sep}examples{sep}a`
-slow
+slow1
+slow2
 ",
         compiling = COMPILING,
         running = RUNNING,
