@@ -227,6 +227,10 @@ test!(example_with_release_flag {
             name = "foo"
             version = "0.0.1"
             authors = []
+
+            [dependencies.bar]
+            version = "*"
+            path = "bar"
         "#)
         .file("examples/a.rs", r#"
             fn main() {
@@ -236,6 +240,18 @@ test!(example_with_release_flag {
                     println!("slow")
                 }
             }
+        "#)
+        .file("bar/Cargo.toml", r#"
+            [project]
+            name = "bar"
+            version = "0.0.1"
+            authors = []
+
+            [lib]
+            name = "bar"
+        "#)
+        .file("bar/src/bar.rs", r#"
+            pub fn noop() {}
         "#);
 
     assert_that(p.cargo_process("run").arg("-v").arg("--release").arg("--example").arg("a"),
