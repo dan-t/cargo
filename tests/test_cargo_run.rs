@@ -266,7 +266,7 @@ test!(example_with_release_flag {
     assert_that(p.cargo_process("run").arg("-v").arg("--release").arg("--example").arg("a"),
                 execs().with_status(0).with_stdout(format!("\
 {compiling} bar v0.0.1 ({url})
-{running} `rustc src/bar.rs --crate-name bar --crate-type lib \
+{running} `rustc src{sep}bar.rs --crate-name bar --crate-type lib \
         -C opt-level=3 \
         --cfg ndebug \
         -C metadata=[..] \
@@ -297,7 +297,7 @@ fast2
     assert_that(p.cargo_process("run").arg("-v").arg("--example").arg("a"),
                 execs().with_status(0).with_stdout(format!("\
 {compiling} bar v0.0.1 ({url})
-{running} `rustc src/bar.rs --crate-name bar --crate-type lib \
+{running} `rustc src{sep}bar.rs --crate-name bar --crate-type lib \
         -g \
         -C metadata=[..] \
         -C extra-filename=[..] \
