@@ -273,16 +273,16 @@ test!(example_with_release_flag {
         -C extra-filename=[..] \
         --out-dir {dir}{sep}target{sep}release{sep}deps \
         --emit=dep-info,link \
-        -L {dir}{sep}target{sep}release{sep}deps \
-        -L {dir}{sep}target{sep}release{sep}deps`
+        -L dependency={dir}{sep}target{sep}release{sep}deps \
+        -L dependency={dir}{sep}target{sep}release{sep}deps`
 {compiling} foo v0.0.1 ({url})
 {running} `rustc {dir}{sep}examples{sep}a.rs --crate-name a --crate-type bin \
         -C opt-level=3 \
         --cfg ndebug \
         --out-dir {dir}{sep}target{sep}release{sep}examples \
         --emit=dep-info,link \
-        -L {dir}{sep}target{sep}release \
-        -L {dir}{sep}target{sep}release{sep}deps \
+        -L dependency={dir}{sep}target{sep}release \
+        -L dependency={dir}{sep}target{sep}release{sep}deps \
          --extern bar={dir}{sep}target{sep}release{sep}deps{sep}libbar-[..].rlib`
 {running} `target{sep}release{sep}examples{sep}a`
 fast1
@@ -303,15 +303,15 @@ fast2
         -C extra-filename=[..] \
         --out-dir {dir}{sep}target{sep}deps \
         --emit=dep-info,link \
-        -L {dir}{sep}target{sep}deps \
-        -L {dir}{sep}target{sep}deps`
+        -L dependency={dir}{sep}target{sep}deps \
+        -L dependency={dir}{sep}target{sep}deps`
 {compiling} foo v0.0.1 ({url})
 {running} `rustc {dir}{sep}examples{sep}a.rs --crate-name a --crate-type bin \
         -g \
         --out-dir {dir}{sep}target{sep}examples \
         --emit=dep-info,link \
-        -L {dir}{sep}target \
-        -L {dir}{sep}target{sep}deps \
+        -L dependency={dir}{sep}target \
+        -L dependency={dir}{sep}target{sep}deps \
          --extern bar={dir}{sep}target{sep}deps{sep}libbar-[..].rlib`
 {running} `target{sep}examples{sep}a`
 slow1
